@@ -48,17 +48,16 @@ Reject titles that:
 
 ## Image Sourcing and Attribution
 
-Attribution is required but is not the same as permission. Prefer low-risk images.
+Attribution is required. For this user's news-account workflow, **do not default to generic Pexels/open-stock images**. Prefer images crawled/extracted from the original news/source pages used in the article, because they usually match the story better. Clearly mark the source whenever using someone else's image.
 
 Priority:
 
-1. Official pages: government, company newsroom, regulator, product page, research project page.
-2. Open-licensed images: Wikimedia Commons, Unsplash, Pexels, etc.
-3. Self-made charts/screenshots of official public documents.
-4. Licensed/open public-domain visual material that fits the article tone.
-5. News article images only as medium-risk candidates requiring review.
+1. Original source pages used as article references: government/regulator pages, company newsroom/announcement pages, exchange/court/policy pages, product pages, research project pages, or reputable original reporting pages.
+2. Other official pages that directly depict the event/product/company/person/document being discussed.
+3. Reputable news-source images that match the story, with attribution such as `图源：XXX 原文 / XXX 新闻 / XXX 官网` and source URL recorded.
+4. Open-licensed/public-domain images: Wikimedia Commons, Unsplash, Pexels, etc. Use these only as fallback when source/news images are unavailable, irrelevant, blocked, too low-quality, or too risky.
 
-Do not use AI-generated images. If no safe image is available, reduce image count, use official screenshots/self-made data charts, or stop at draft/no-publish rather than creating synthetic visuals.
+Do not use AI-generated images, assistant-made screenshots, self-made diagrams, or self-made charts for this user's news workflow unless the user explicitly changes the rule. If no suitable image is available, reduce image count or stop at draft/no-publish rather than creating synthetic visuals.
 
 For every image candidate record:
 
@@ -77,9 +76,10 @@ For every image candidate record:
 
 Default safety rules:
 
-- Do not auto-use unclear-rights news photos as covers.
-- Avoid minors, accident/disaster scenes, medical/criminal scenes, celebrity/film stills, watermarked copyrighted photos.
-- For sensitive topics use official screenshots, simple self-made diagrams, self-made charts, or licensed abstract visuals; do not generate images with AI.
+- First try source/news-page images; use Pexels/Unsplash/open-stock only as a documented fallback.
+- Caption source images clearly, e.g. `图源：XXX 原文 / XXX 官网 / XXX 新闻`.
+- Avoid minors, accident/disaster scenes, medical/criminal scenes, celebrity/film stills, watermarked copyrighted photos unless central to the story and risk is explicitly recorded.
+- For sensitive topics use official/source-page images or neutral licensed/open visuals; do not generate images with AI or create substitute diagrams/screenshots yourself.
 - Put source attribution near the image or in a final image/source block.
 
 ## WeChat Auto-Publishing Gate

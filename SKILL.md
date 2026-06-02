@@ -18,7 +18,7 @@ This skill governs an end-to-end daily editorial automation workflow for Chinese
 
 The workflow should produce a publishable article, not a generic news digest. The default editorial target is: 热点足够大、角度足够小、判断足够锐利、证据足够硬、表达不标题党。
 
-User-specific hard constraint: do not use AI-generated images. Images must be sourced from official/licensed/open/public materials, public screenshots, or self-made charts based on real data, with attribution and risk review.
+User-specific image rule: do not use AI-generated images or assistant-created visuals. Prefer images that come directly from the original news/source pages and match the story, with clear source attribution. Official/company/government/news-source images are preferred when relevant; Pexels/Unsplash/open-stock images are fallback only when source images are unavailable, irrelevant, blocked, or too risky. Do not use self-made charts, assistant-made screenshots, AI-generated images, or other visuals created by the assistant for this workflow unless the user explicitly changes the rule in-session.
 
 Default stance: generate a high-quality reviewed draft. User preference for this workflow: after drafting an article, directly create a ready-to-review WeChat draft without asking for an extra confirmation step; do not call `freepublish/submit` or otherwise auto-publish unless the user explicitly asks to enable automatic publishing again in that session.
 
@@ -50,7 +50,7 @@ Prefer a staged pipeline instead of one monolithic cron run:
 3. **Select topic** — score candidate events for heat, niche angle, source confidence, structural significance, and risk.
 4. **Mine title references** — collect comparable low-follower/high-performing titles; extract patterns without copying.
 5. **Draft article** — write one thesis-driven WeChat article with source-grounded facts.
-6. **Source images** — select official/licensed/open/public images, public screenshots, or self-made charts; record attribution and risk.
+6. **Source images** — first extract candidate images from the original source/news pages used for the article; if unavailable or unsuitable, fall back to official/licensed/open/public images. Record attribution, source URL, and risk.
 7. **Review** — fact check, title-risk check, image-rights check, WeChat formatting check.
 8. **Publish** — create draft, then publish only if the configured gate passes.
 
@@ -164,22 +164,22 @@ Style:
 - Opinionated but sourced.
 - Specific nouns over abstract slogans.
 - Avoid officialese, thesis prose, and AI clichés.
-- For this user's news公众号 drafts, add this exact engagement sentence near both the ending: `如果觉得说得有道理，可以关注、点赞、评论、推荐。`
+- For this user's news公众号 drafts, put the engagement/like sentence only near the ending, not at the beginning. Use this exact sentence at the end: `如果觉得说得有道理，可以关注、点赞、评论、推荐。`
+- Do not add draft-operation/status notes into the public article body, especially sentences like `本文只创建草稿，不自动发布。` or `只创建草稿，不自动发布`. Keep draft/publish status only in result JSON, assistant summary, or editor-only metadata, not in the WeChat正文 shown to readers.
 - Run a humanizing pass before draft creation: remove machine-sounding scaffolding such as “值得注意的是”, “从某种意义上说”, “这背后反映出”, generic three-part summaries, formulaic transitions, and empty elevation. Prefer concrete details, varied rhythm, short mobile paragraphs, and a visible human judgment without inventing facts.
 
 ## Image Sourcing and Attribution
 
-Every article should have a cover image and optional inline images. Image attribution is mandatory, but attribution alone does not guarantee usage rights. Prefer low-risk sources.
+Every article should have a cover image and optional inline images. The user's preference is **story-matched source images first**, not generic Pexels/open-stock images by default. Image attribution is mandatory. Attribution does not automatically remove copyright risk, but for this workflow the practical rule is: use images from the original news/source pages when they best match the article, clearly mark the source, and reserve open-stock images as fallback.
 
 Priority order:
 
-1. Official image from a government/company/project/newsroom page.
-2. Licensed open image: Wikimedia Commons, Unsplash, Pexels, etc.
-3. Self-made chart or screenshot of official public document/page.
-4. Licensed/open public-domain visual material that fits the article tone.
-5. News article image only as a medium-risk candidate requiring careful attribution and review.
+1. Images from the original source pages already used as article references: regulator/government pages, company announcements/newsrooms, exchange filings, court/policy pages, or reputable original reporting pages.
+2. Official image from another government/company/project/newsroom page that directly depicts the event, product, person, venue, document, chart, or scene discussed.
+3. Reputable news-source images that match the story, used with visible attribution such as `图源：XXX 新闻 / XXX 官网 / 原文页面` and recorded source URL.
+4. Licensed open/public-domain images such as Wikimedia Commons, Unsplash, Pexels, etc. Use these only when source/news images are unavailable, irrelevant, blocked, too low-quality, or too risky.
 
-Do not use AI-generated images for cover or inline article images. If no safe image is available, use fewer images, use official screenshots/self-made data charts, or stop at draft/no-publish instead of inventing visuals.
+Do not use AI-generated images, assistant-created charts, assistant-made screenshots, or other self-made visuals for cover or inline article images in this user's news workflow. If no suitable source/news/official/open image is available, use fewer images or stop at draft/no-publish instead of inventing visuals.
 
 For every image record:
 
@@ -194,10 +194,11 @@ For every image record:
 
 Rules:
 
-- Do not use unclear-rights news photos as automatic cover images when a safer alternative exists.
-- Avoid celebrity photos, minors, accident/disaster photos, medical/criminal scene photos, and watermarked copyrighted images.
-- For sensitive social topics, prefer abstract/generated images or self-made diagrams.
-- Inline image captions should include clear attribution such as `图源：XXX 官网 / XXX 公告 / Wikimedia Commons`.
+- Do not default to Pexels/Unsplash just because it is easy; first try to extract matching images from the source/news pages used in the article.
+- When using someone else's news/source image, place attribution in the caption or image block, e.g. `图源：XXX 原文 / XXX 官网 / XXX 新闻`.
+- Avoid celebrity photos, minors, accident/disaster photos, medical/criminal scene photos, and watermarked copyrighted images unless they are central to the story and attribution/risk is explicitly recorded.
+- For sensitive social topics, prefer official/source-page images or neutral open/licensed imagery from external sources; do not create substitute AI images or assistant-made diagrams for this user's news workflow.
+- Inline image captions should include clear attribution such as `图源：XXX 原文 / XXX 官网 / XXX 公告 / Wikimedia Commons`.
 
 ## WeChat Official Account Publishing
 
@@ -325,7 +326,7 @@ Minimum prompt requirements:
 2. **Choosing the loudest topic.** Big heat without source confidence or a fresh angle is not enough.
 3. **Using viral-title research as plagiarism.** Borrow patterns, not wording.
 4. **Treating attribution as image permission.** Source credit reduces ambiguity but does not automatically clear copyright.
-5. **Publishing screenshots or news photos automatically.** Use official/open/licensed images, public-source screenshots, or self-made charts when possible.
+5. **Using generic stock photos by default.** For this user's news account, first crawl/extract images from the original news/source pages and caption them with source attribution. Use Pexels/Unsplash/open-stock only as a fallback when source images are not suitable.
 6. **Letting LLM invent sources, numbers, quotes, or URLs.** If not verified, mark unknown or omit.
 7. **Writing “锐利” as insult.** Be precise, not abusive or conspiratorial.
 8. **Forgetting WeChat HTML constraints.** Markdown is not enough for publishing; images must be uploaded/rehosted.
@@ -350,8 +351,11 @@ Before finalizing or publishing:
 - [ ] It is not a generic news summary or hotspot list.
 - [ ] Comparable title examples were analyzed without copying unique wording.
 - [ ] Final title is accurate and non-clickbait.
-- [ ] Cover/inline images have source, attribution, license/risk notes.
-- [ ] High-risk images are not used automatically.
+- [ ] Required engagement sentence appears near the ending only, not in the opening.
+- [ ] Public WeChat正文 does not contain draft-operation/status notes such as `本文只创建草稿，不自动发布。`; draft-only status is recorded only in result/summary/editor metadata.
+- [ ] Images were first sought from the original news/source pages used by the article; any Pexels/Unsplash/open-stock image is justified as a fallback.
+- [ ] Cover/inline images have source, attribution, license/permission status when known, and risk notes.
+- [ ] Images are externally sourced from source/news/official/open pages; no AI-generated, assistant-created, self-made chart, or self-made screenshot fallback was used.
 - [ ] WeChat HTML renders correctly.
 - [ ] Draft creation succeeded before publish submission.
 - [ ] Publish gate passed if auto-publishing.
@@ -364,5 +368,6 @@ Useful support files for this skill:
 - `references/title-and-image-workflow.md` — condensed guidance for viral-title research and image sourcing/attribution.
 - `references/wechat-api-publishing-pitfalls.md` — WeChat API publishing failure handling, especially IP whitelist 40164 and Windows path pitfalls.
 - `references/direct-draft-creation-pattern.md` — user-specific direct draft creation flow: author default, 2-3 inline images, strict external-image-only policy, Wikimedia `Special:FilePath` retry pattern, and draft verification shape.
+- `references/source-gallery-image-draft-pattern.md` — source/news gallery image extraction, PIL compression for WeChat upload, attribution captions, and draft/get verification checks including no opening engagement sentence.
 - `templates/cron-prompt.md` — self-contained daily cron prompt.
 - `templates/review-prompt.md` — fact/editorial/title/image review prompt.
