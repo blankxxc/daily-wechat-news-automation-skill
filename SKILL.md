@@ -369,5 +369,6 @@ Useful support files for this skill:
 - `references/wechat-api-publishing-pitfalls.md` — WeChat API publishing failure handling, especially IP whitelist 40164 and Windows path pitfalls.
 - `references/direct-draft-creation-pattern.md` — user-specific direct draft creation flow: author default, 2-3 inline images, strict external-image-only policy, Wikimedia `Special:FilePath` retry pattern, and draft verification shape.
 - `references/source-gallery-image-draft-pattern.md` — source/news gallery image extraction, PIL compression for WeChat upload, attribution captions, and draft/get verification checks including no opening engagement sentence.
+- `references/policy-source-image-fallback-draft-pattern.md` — official policy/regulation pages with no usable images: keep facts anchored to the official source, use Wikimedia/open-license fallback images with attribution, and verify no draft-status text leaks into正文.
 - `templates/cron-prompt.md` — self-contained daily cron prompt.
 - `templates/review-prompt.md` — fact/editorial/title/image review prompt.
